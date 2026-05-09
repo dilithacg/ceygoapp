@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AddHotel from "./AddHotel";
 import Hotels from "./Hotels";
 import Bookings from "./Bookings";
+import AdminAddDestination from "./AdminAddDestination";
 
 const AdminDashboard = () => {
   const [tab, setTab] = useState("hotels");
@@ -38,12 +39,21 @@ const AdminDashboard = () => {
         >
           Bookings
         </button>
+        <button
+          onClick={() => setTab("destinations")}
+          className={`px-4 py-2 rounded-xl ${
+            tab === "destinations" ? "bg-blue-600 text-white" : "bg-white"
+          }`}
+        >
+          Add Destination
+        </button>
       </div>
 
       {/* CONTENT */}
       {tab === "hotels" && <Hotels />}
       {tab === "add" && <AddHotel />}
       {tab === "bookings" && <Bookings />}
+      {tab === "destinations" && <AdminAddDestination />}
     </div>
   );
 };

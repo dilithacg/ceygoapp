@@ -1,46 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapPin, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const destinations = [
-  {
-    name: "Ella",
-    location: "Badulla",
-    rating: 4.8,
-    image:
-      "https://feelfreetravel.com/blog/wp-content/uploads/2024/02/Hero-9-arches-bridge-2048x1300-1.jpg",
-    description:
-      "Beautiful mountain views, tea plantations, and hiking adventures.",
-  },
-  {
-    name: "Sigiriya",
-    location: "Matale",
-    rating: 4.9,
-    image:
-      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ed/85/6b/um-palacio-no-topo-da.jpg?w=900&h=500&s=1",
-    description:
-      "Ancient rock fortress and one of Sri Lanka’s most iconic landmarks.",
-  },
-  {
-    name: "Mirissa",
-    location: "Southern Province",
-    rating: 4.7,
-    image:
-      "https://www.theglobetrottergp.com/wp-content/uploads/2019/05/oDZ1LpuSxCdJQd5UhbjSA_thumb_60bb.jpg",
-    description: "Golden beaches, whale watching, and tropical relaxation.",
-  },
-  {
-    name: "Kandy",
-    location: "Central Province",
-    rating: 4.6,
-    image:
-      "https://faw-marketing.transforms.svdcdn.com/production/images/Temple-of-the-Tooth-in-Kandy.jpg?w=2600&h=1722&auto=compress%2Cformat&fit=crop&crop=focalpoint&fp-x=0.507&fp-y=0.4316&dm=1541511868&s=6f4458b5bfafc1e9a8e70d82f85379a7",
-    description:
-      "Cultural capital with temples, lakes, and rich Sri Lankan heritage.",
-  },
-];
+import API from "../services/api";
 
 const Destinations = () => {
+  const [destinations, setDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await API.get("/destinations");
+        setDestinations(res.data);
+      } catch (error) {
+        console.log("Error fetching destinations:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 py-20 px-6">
       <div className="max-w-7xl mx-auto">
@@ -48,12 +29,26 @@ const Destinations = () => {
           Explore Destinations
         </h1>
 
+        {/* LOADING STATE */}
+        {loading && (
+          <p className="text-center text-gray-500">Loading destinations...</p>
+        )}
+
+        {/* EMPTY STATE */}
+        {!loading && destinations.length === 0 && (
+          <p className="text-center text-gray-500">
+            No destinations found. Add from Admin.
+          </p>
+        )}
+
+        {/* GRID */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {destinations.map((place, index) => (
+          {destinations.map((place) => (
             <div
-              key={index}
+              key={place._id}
               className="bg-white rounded-3xl overflow-hidden shadow-xl hover:-translate-y-2 duration-300"
             >
+              {/* IMAGE */}
               <img
                 src={place.image}
                 alt={place.name}
@@ -61,6 +56,7 @@ const Destinations = () => {
               />
 
               <div className="p-6">
+                {/* NAME + RATING */}
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-2xl font-bold">{place.name}</h2>
 
@@ -70,15 +66,20 @@ const Destinations = () => {
                   </div>
                 </div>
 
+                {/* LOCATION */}
                 <div className="flex items-center gap-2 text-gray-500 mb-4">
                   <MapPin size={18} />
                   <span>{place.location}</span>
                 </div>
 
-                <p className="text-gray-600 mb-6">{place.description}</p>
+                {/* DESCRIPTION */}
+                <p className="text-gray-600 mb-6 line-clamp-3">
+                  {place.description}
+                </p>
 
+                {/* BUTTON */}
                 <Link
-                  to={`/destinations/${place.name.toLowerCase()}`}
+                  to={`/destinations/${place._id}`}
                   className="block text-center w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 duration-300"
                 >
                   View Details
