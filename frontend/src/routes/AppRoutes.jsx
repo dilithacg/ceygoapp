@@ -12,7 +12,7 @@ import Budget from "../pages/Budget";
 import Weather from "../pages/Weather";
 import Events from "../pages/Events";
 import Profile from "../pages/Profile";
-import AdminDashboard from "../pages/AdminDashboard";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 import NotFound from "../pages/NotFound";
 
 import Hotels from "../pages/Hotels";
@@ -23,6 +23,7 @@ import Drivers from "../pages/Drivers";
 import DestinationDetails from "../pages/DestinationDetails";
 import HotelDetails from "../pages/HotelDetails";
 import MyBookings from "../pages/MyBookings";
+import AdminRoute from "./AdminRoute";
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,14 @@ const AppRoutes = () => {
           <Route path="destinations/:id" element={<DestinationDetails />} />
           <Route path="hotels/:id" element={<HotelDetails />} />
           <Route path="my-bookings" element={<MyBookings />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
         </Route>
 
         <Route path="/login" element={<Login />} />
