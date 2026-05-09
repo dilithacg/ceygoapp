@@ -46,6 +46,7 @@ const Navbar = () => {
 
         {/* USER ONLY */}
         {user && <Link to="/my-bookings">My Bookings</Link>}
+        {user && <Link to="/my-plans">My Plans</Link>}
 
         {/* ADMIN ONLY */}
         {user?.isAdmin && (

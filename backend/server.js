@@ -8,6 +8,8 @@ const authRoutes = require("./routes/authRoutes");
 const hotelRoutes = require("./routes/hotelRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 
+const planRoutes = require("./routes/planRoutes");
+
 dotenv.config();
 connectDB();
 
@@ -19,6 +21,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/plans", planRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");

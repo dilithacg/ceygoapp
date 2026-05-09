@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { generateTravelPlan } from "../../services/geminiApi";
 
-const PlannerForm = () => {
+const PlannerForm = ({ setResult }) => {
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     destination: "",
     days: "",
@@ -15,12 +18,20 @@ const PlannerForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    setLoading(true);
 
-    alert("AI Planner Coming Soon 🚀");
+    try {
+      const result = await generateTravelPlan(formData);
+      setResult(result);
+    } catch (err) {
+      console.log(err);
+      alert("AI failed. Try again.");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -31,39 +42,40 @@ const PlannerForm = () => {
 
       <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
         <input
-          type="text"
           name="destination"
           placeholder="Destination"
-          className="p-4 rounded-xl border outline-none"
+          className="p-4 border rounded-xl"
           onChange={handleChange}
         />
 
         <input
-          type="number"
           name="days"
-          placeholder="Travel Days"
-          className="p-4 rounded-xl border outline-none"
-          onChange={handleChange}
-        />
-
-        <input
           type="number"
-          name="budget"
-          placeholder="Budget ($)"
-          className="p-4 rounded-xl border outline-none"
+          placeholder="Days"
+          className="p-4 border rounded-xl"
           onChange={handleChange}
         />
 
         <input
-          type="text"
-          name="interests"
-          placeholder="Interests (Beach, Hiking...)"
-          className="p-4 rounded-xl border outline-none"
+          name="budget"
+          type="number"
+          placeholder="Budget"
+          className="p-4 border rounded-xl"
           onChange={handleChange}
         />
 
-        <button className="md:col-span-2 bg-blue-600 text-white py-4 rounded-xl text-xl font-bold hover:bg-blue-700 duration-300">
-          Generate AI Plan
+        <input
+          name="interests"
+          placeholder="Interests"
+          className="p-4 border rounded-xl"
+          onChange={handleChange}
+        />
+
+        <button
+          className="md:col-span-2 bg-blue-600 text-white py-4 rounded-xl font-bold"
+          disabled={loading}
+        >
+          {loading ? "Generating..." : "Generate AI Plan"}
         </button>
       </form>
     </div>

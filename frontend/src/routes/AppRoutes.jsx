@@ -25,6 +25,8 @@ import HotelDetails from "../pages/HotelDetails";
 import MyBookings from "../pages/MyBookings";
 import AdminRoute from "./AdminRoute";
 
+import MyPlans from "../pages/MyPlans";
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -44,6 +46,7 @@ const AppRoutes = () => {
           <Route path="destinations/:id" element={<DestinationDetails />} />
           <Route path="hotels/:id" element={<HotelDetails />} />
           <Route path="my-bookings" element={<MyBookings />} />
+          <Route path="my-plans" element={<MyPlans />} />
           <Route
             path="/admin"
             element={
