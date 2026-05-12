@@ -40,8 +40,25 @@ const deleteDestination = async (req, res) => {
   }
 };
 
+const updateDestination = async (req, res) => {
+  try {
+    const updated = await Destination.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+    );
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createDestination,
   getDestinations,
   deleteDestination,
+  updateDestination,
 };

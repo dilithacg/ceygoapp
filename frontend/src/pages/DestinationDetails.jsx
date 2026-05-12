@@ -2,30 +2,34 @@ import React, { useEffect, useState } from "react";
 import { MapPin, Star, CloudSun } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
+import axios from "axios";
+import { getWeather } from "../services/weatherApi";
+
+const WEATHER_API_KEY = "YOUR_OPENWEATHER_KEY_HERE";
 
 const DestinationDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [place, setPlace] = useState(null);
+  const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // FETCH FROM BACKEND
+  // GET DESTINATION FROM DB
   useEffect(() => {
     const fetchDestination = async () => {
       try {
         const res = await API.get("/destinations");
 
-        // find by ID OR name
         const found = res.data.find(
           (item) =>
             item._id === id || item.name.toLowerCase() === id.toLowerCase(),
         );
 
         setPlace(found);
-        setLoading(false);
       } catch (err) {
         console.log(err);
+      } finally {
         setLoading(false);
       }
     };
@@ -33,11 +37,27 @@ const DestinationDetails = () => {
     fetchDestination();
   }, [id]);
 
+  // GET REAL WEATHER
+  useEffect(() => {
+    const fetchWeather = async () => {
+      if (!place?.location) return;
+
+      try {
+        const res = await getWeather(place.location);
+        setWeather(res.data);
+      } catch (err) {
+        console.log("Weather error:", err.response?.data || err.message);
+        setWeather(null);
+      }
+    };
+
+    fetchWeather();
+  }, [place]);
+
   const saveDestination = () => {
     const saved = JSON.parse(localStorage.getItem("favorites")) || [];
     saved.push(place);
     localStorage.setItem("favorites", JSON.stringify(saved));
-
     alert("Destination Saved ❤️");
   };
 
@@ -85,6 +105,21 @@ const DestinationDetails = () => {
             <div className="flex items-center gap-2">
               <Star className="text-yellow-500" fill="gold" />
               <span className="text-xl">{place.rating}</span>
+            </div>
+
+            {/* REAL WEATHER */}
+            <div className="flex items-center gap-2">
+              <CloudSun className="text-blue-500" />
+
+              {weather?.main ? (
+                <span className="text-xl">
+                  {Math.round(weather.main.temp)}°C - {weather.weather[0].main}
+                </span>
+              ) : (
+                <span className="text-xl text-gray-500">
+                  Loading weather...
+                </span>
+              )}
             </div>
           </div>
 

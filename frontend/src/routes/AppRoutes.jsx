@@ -26,6 +26,8 @@ import MyBookings from "../pages/MyBookings";
 import AdminRoute from "./AdminRoute";
 
 import MyPlans from "../pages/MyPlans";
+import CultureEventDetails from "../pages/CultureEventDetails";
+import RestaurantDetails from "../pages/RestaurantDetails";
 
 const AppRoutes = () => {
   return (
@@ -47,6 +49,9 @@ const AppRoutes = () => {
           <Route path="hotels/:id" element={<HotelDetails />} />
           <Route path="my-bookings" element={<MyBookings />} />
           <Route path="my-plans" element={<MyPlans />} />
+          <Route path="events/:id" element={<CultureEventDetails />} />
+          <Route path="/restaurants/:id" element={<RestaurantDetails />} />
+
           <Route
             path="/admin"
             element={

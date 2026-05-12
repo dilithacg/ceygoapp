@@ -1,25 +1,21 @@
-import React from "react";
-import { Car, Star } from "lucide-react";
-import { useState } from "react";
-import BookingModal from "../components/common/BookingModal";
-
-const drivers = [
-  {
-    name: "Saman Kumara",
-    vehicle: "Toyota Prius",
-    rating: 4.9,
-    image: "https://randomuser.me/api/portraits/men/52.jpg",
-  },
-  {
-    name: "Ruwan Fernando",
-    vehicle: "KDH Van",
-    rating: 4.8,
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
-  },
-];
+import React, { useEffect, useState } from "react";
+import API from "../services/api";
+import { Star, MapPin } from "lucide-react";
+import DriverBookingModal from "../components/common/DriverBookingModal";
 
 const Drivers = () => {
+  const [drivers, setDrivers] = useState([]);
   const [open, setOpen] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      const res = await API.get("/drivers");
+      setDrivers(res.data);
+    };
+
+    fetchDrivers();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 py-20 px-6">
@@ -27,43 +23,47 @@ const Drivers = () => {
         Drivers
       </h1>
 
-      <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-        {drivers.map((driver, index) => (
+      <div className="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+        {drivers.map((d) => (
           <div
-            key={index}
-            className="bg-white rounded-3xl shadow-xl p-8 text-center"
+            key={d._id}
+            className="bg-white rounded-3xl shadow-xl overflow-hidden"
           >
-            <img
-              src={driver.image}
-              alt={driver.name}
-              className="w-40 h-40 rounded-full mx-auto object-cover mb-6"
-            />
+            <img src={d.image} className="h-64 w-full object-cover" />
 
-            <h2 className="text-3xl font-bold mb-3">{driver.name}</h2>
+            <div className="p-6">
+              <h2 className="text-2xl font-bold">{d.name}</h2>
 
-            <div className="flex justify-center items-center gap-2 text-gray-600 mb-3">
-              <Car size={20} />
-              <span>{driver.vehicle}</span>
+              <div className="flex items-center gap-2 text-gray-500 mt-2">
+                <MapPin size={16} />
+                {d.location}
+              </div>
+
+              <p className="text-gray-600 mt-2">Vehicle: {d.vehicleType}</p>
+
+              <div className="flex items-center gap-2 text-yellow-500 mt-2">
+                <Star size={16} fill="gold" />
+                {d.rating}
+              </div>
+
+              <p className="font-bold text-blue-600 mt-2">${d.pricePerKm}/km</p>
+              <button
+                onClick={() => {
+                  setSelectedDriver(d);
+                  setOpen(true);
+                }}
+                className="mt-5 bg-blue-600 text-white w-full py-2 rounded-xl font-bold"
+              >
+                Book Driver
+              </button>
             </div>
-
-            <div className="flex justify-center items-center gap-1 text-yellow-500 mb-6">
-              <Star fill="gold" size={18} />
-              <span>{driver.rating}</span>
-            </div>
-
-            <button
-              onClick={() => setOpen(true)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold"
-            >
-              Book Driver
-            </button>
           </div>
         ))}
       </div>
-      <BookingModal
-        title="Driver Booking"
+      <DriverBookingModal
         isOpen={open}
         onClose={() => setOpen(false)}
+        driver={selectedDriver}
       />
     </div>
   );

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import API from "../../services/api";
 
-const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
+const GuideBookingModal = ({ isOpen, onClose, guide }) => {
   const [form, setForm] = useState({
-    name: "",
+    userName: "",
     email: "",
     phone: "",
     date: "",
-    time: "",
-    people: 1,
+    days: 1,
   });
 
   if (!isOpen) return null;
@@ -21,13 +20,14 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
     e.preventDefault();
 
     try {
-      await API.post("/restaurant-bookings", {
+      await API.post("/guide-bookings", {
         ...form,
-        restaurantName: restaurant?.name,
-        restaurantId: restaurant?._id,
+        guideId: guide._id,
+        guideName: guide.name,
+        location: guide.location,
       });
 
-      alert("Table Reserved Successfully ✅");
+      alert("Guide Booked Successfully ✅");
       onClose();
     } catch (error) {
       console.log(error);
@@ -38,11 +38,11 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-2xl w-[400px]">
-        <h2 className="text-2xl font-bold mb-4">{title}</h2>
+        <h2 className="text-2xl font-bold mb-4">Hire {guide?.name}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
-            name="name"
+            name="userName"
             placeholder="Name"
             className="w-full p-2 border"
             onChange={handleChange}
@@ -67,16 +67,9 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
             onChange={handleChange}
           />
           <input
-            type="time"
-            name="time"
-            className="w-full p-2 border"
-            onChange={handleChange}
-          />
-
-          <input
             type="number"
-            name="people"
-            placeholder="People"
+            name="days"
+            placeholder="Days"
             className="w-full p-2 border"
             onChange={handleChange}
           />
@@ -94,4 +87,4 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
   );
 };
 
-export default BookingModal;
+export default GuideBookingModal;

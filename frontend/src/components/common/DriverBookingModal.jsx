@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import API from "../../services/api";
 
-const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
+const DriverBookingModal = ({ isOpen, onClose, driver }) => {
   const [form, setForm] = useState({
-    name: "",
+    userName: "",
     email: "",
     phone: "",
+    pickupLocation: "",
+    dropLocation: "",
     date: "",
     time: "",
-    people: 1,
+    days: 1,
   });
 
   if (!isOpen) return null;
@@ -21,13 +23,13 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
     e.preventDefault();
 
     try {
-      await API.post("/restaurant-bookings", {
+      await API.post("/driver-bookings", {
         ...form,
-        restaurantName: restaurant?.name,
-        restaurantId: restaurant?._id,
+        driverId: driver._id,
+        driverName: driver.name,
       });
 
-      alert("Table Reserved Successfully ✅");
+      alert("Driver Booked Successfully 🚗");
       onClose();
     } catch (error) {
       console.log(error);
@@ -37,12 +39,12 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-2xl w-[400px]">
-        <h2 className="text-2xl font-bold mb-4">{title}</h2>
+      <div className="bg-white p-8 rounded-2xl w-[420px]">
+        <h2 className="text-2xl font-bold mb-4">Book {driver?.name}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
-            name="name"
+            name="userName"
             placeholder="Name"
             className="w-full p-2 border"
             onChange={handleChange}
@@ -56,6 +58,19 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
           <input
             name="phone"
             placeholder="Phone"
+            className="w-full p-2 border"
+            onChange={handleChange}
+          />
+
+          <input
+            name="pickupLocation"
+            placeholder="Pickup Location"
+            className="w-full p-2 border"
+            onChange={handleChange}
+          />
+          <input
+            name="dropLocation"
+            placeholder="Drop Location"
             className="w-full p-2 border"
             onChange={handleChange}
           />
@@ -75,13 +90,13 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
 
           <input
             type="number"
-            name="people"
-            placeholder="People"
+            name="days"
+            placeholder="Days"
             className="w-full p-2 border"
             onChange={handleChange}
           />
 
-          <button className="bg-blue-600 text-white w-full py-2 rounded-xl">
+          <button className="bg-blue-600 text-white w-full py-2 rounded-xl font-bold">
             Confirm Booking
           </button>
         </form>
@@ -94,4 +109,4 @@ const BookingModal = ({ isOpen, onClose, title, restaurant }) => {
   );
 };
 
-export default BookingModal;
+export default DriverBookingModal;
